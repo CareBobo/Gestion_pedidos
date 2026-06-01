@@ -1,0 +1,460 @@
+/* ==========================================================================
+   DESIGN SYSTEM - GESTIÓN DE PEDIDOS DE TIENDA (PREMIUM CSS)
+   ========================================================================== */
+
+:root {
+  --font-primary: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-accent: 'Outfit', sans-serif;
+
+  /* Premium Light Theme */
+  --bg-primary: #F4F6F8;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #E9ECEF;
+  --border-color: #E2E8F0;
+  
+  --text-primary: #0A192F;
+  --text-secondary: #4A5568;
+  --text-muted: #8E9AAF;
+
+  /* Branding Colors */
+  --primary-color: #0A192F;
+  --primary-light: #172A45;
+  --gold-color: #D4AF37;
+  --gold-hover: #AA8C2C;
+  --gold-light: #FBF5E6;
+  
+  /* Accent status colors */
+  --status-pending: #D97706;
+  --status-pending-bg: rgba(217, 119, 6, 0.08);
+  --status-prep: #2563EB;
+  --status-prep-bg: rgba(37, 99, 235, 0.08);
+  --status-done: #4F46E5;
+  --status-done-bg: rgba(79, 70, 229, 0.08);
+  --status-delivered: #059669;
+  --status-delivered-bg: rgba(5, 150, 105, 0.08);
+  --status-fulfilled: #B8860B;
+  --status-fulfilled-bg: rgba(184, 134, 11, 0.08);
+  --status-cancelled: #DC2626;
+  --status-cancelled-bg: rgba(220, 38, 38, 0.08);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(10, 25, 47, 0.04);
+  --shadow-md: 0 8px 24px rgba(10, 25, 47, 0.06);
+  --shadow-lg: 0 16px 40px rgba(10, 25, 47, 0.1);
+  
+  /* Border Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  
+  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Dark Theme overrides */
+.dark {
+  --bg-primary: #070C19;
+  --bg-secondary: #0D162D;
+  --bg-tertiary: #1B2644;
+  --border-color: #1F2E54;
+  
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #64748B;
+
+  --primary-color: #FFFFFF;
+  --primary-light: #F1F5F9;
+  --gold-light: rgba(212, 175, 55, 0.1);
+
+  --status-pending-bg: rgba(217, 119, 6, 0.15);
+  --status-prep-bg: rgba(37, 99, 235, 0.15);
+  --status-done-bg: rgba(79, 70, 229, 0.15);
+  --status-delivered-bg: rgba(5, 150, 105, 0.15);
+  --status-fulfilled-bg: rgba(184, 134, 11, 0.15);
+  --status-cancelled-bg: rgba(220, 38, 38, 0.15);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: #111827; /* Dark background to center our mobile frame */
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* PWA App Shell - Mobile First frame */
+.app-container {
+  width: 100%;
+  max-width: 480px; /* Perfect Phone layout on desktop */
+  height: 100%;
+  background-color: var(--bg-primary);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+}
+
+@media (min-width: 481px) {
+  .app-container {
+    height: 92vh;
+    border-radius: var(--radius-lg);
+    border: 4px solid var(--primary-color);
+  }
+  .dark .app-container {
+    border: 4px solid var(--border-color);
+  }
+}
+
+/* Content Area */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: 90px; /* Safe padding for bottom nav */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars for a cleaner mobile look */
+.app-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: var(--font-accent);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Premium Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  width: 100%;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--bg-secondary);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-light);
+}
+
+.btn-gold {
+  background-color: var(--gold-color);
+  color: #0A192F;
+}
+
+.btn-gold:hover {
+  background-color: var(--gold-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.btn-danger {
+  background-color: var(--status-cancelled);
+  color: #FFFFFF;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
+
+.badge-pendiente { background-color: var(--status-pending-bg); color: var(--status-pending); }
+.badge-preparacion { background-color: var(--status-prep-bg); color: var(--status-prep); }
+.badge-realizado { background-color: var(--status-done-bg); color: var(--status-done); }
+.badge-entregado { background-color: var(--status-delivered-bg); color: var(--status-delivered); }
+.badge-cumplido { background-color: var(--status-fulfilled-bg); color: var(--status-fulfilled); }
+.badge-cancelado { background-color: var(--status-cancelled-bg); color: var(--status-cancelled); }
+
+/* Premium Input Fields */
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-accent);
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: 15px;
+  transition: var(--transition-smooth);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--gold-color);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+/* Glass Header */
+.app-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+  transition: var(--transition-smooth);
+}
+
+.dark .app-header {
+  background-color: rgba(13, 22, 45, 0.85);
+}
+
+/* Tab Bar Navigation */
+.app-tabbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: var(--safe-area-bottom);
+  z-index: 20;
+  transition: var(--transition-smooth);
+}
+
+.dark .app-tabbar {
+  background-color: rgba(13, 22, 45, 0.92);
+}
+
+.tabbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  flex: 1;
+}
+
+.tabbar-item-active {
+  color: var(--gold-color);
+}
+
+.tabbar-item:active {
+  transform: scale(0.92);
+}
+
+/* Cards Design */
+.card {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
+  transition: var(--transition-smooth);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+/* Glowing effects */
+.glow-gold {
+  border-left: 4px solid var(--gold-color);
+}
+
+.glow-red {
+  border-left: 4px solid var(--status-cancelled);
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.2); }
+  70% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+/* Modales */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 25, 47, 0.6);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.modal-content {
+  width: 100%;
+  max-height: 90%;
+  background-color: var(--bg-primary);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  padding: 24px 16px;
+  overflow-y: auto;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+  animation: slideUp 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* KPI Dashboard Cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kpi-card {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kpi-num {
+  font-family: var(--font-accent);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* Audio notifications / Alerts */
+.stock-alert {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  color: #DC2626;
+}
+
+.dark .stock-alert {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.1) 100%);
+}
+
+/* Animations classes */
+.animated-scale {
+  transition: transform 0.2s ease-in-out;
+}
+.animated-scale:active {
+  transform: scale(0.95);
+}
+
+/* Responsive Table / Layout modifiers for desktop browser view of PWA */
+@media (min-width: 1024px) {
+  body {
+    background-color: #030712;
+  }
+}
+
+/* Prints receipt beautifully */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area, .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
