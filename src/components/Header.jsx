@@ -133,39 +133,3 @@ export default function Header({ currentUser, onLogout }) {
     </header>
   );
 }
-                    {currentUser.role === 'admin' ? <Shield size={10} /> : <Award size={10} />}
-                    {currentUser.role.toUpperCase()}
-                  </div>
-                </div>
-                <button 
-                  onClick={() => {
-                    setShowProfileMenu(false);
-                    logoutUser();
-                  }}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '8px',
-                    fontSize: '12px',
-                    color: 'var(--status-cancelled)',
-                    background: 'none',
-                    border: 'none',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    borderRadius: 'var(--radius-sm)'
-                  }}
-                  className="animated-scale"
-                >
-                  <LogOut size={14} />
-                  Cerrar Sesión
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </header>
-  );
-}

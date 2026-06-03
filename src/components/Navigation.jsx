@@ -51,9 +51,3 @@ export default function Navigation({ activeTab, setActiveTab, currentUser }) {
     </nav>
   );
 }
-          </button>
-        );
-      })}
-    </nav>
-  );
-}
