@@ -17,26 +17,43 @@ function MainApp() {
   useEffect(() => {
     // Check if user is already logged in
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session) {
-        // Fetch user data from database
-        const { data: userData } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        if (userData && userData.status === 'aprobado') {
-          setCurrentUser({
-            id: session.user.id,
-            email: session.user.email,
-            full_name: userData.full_name,
-            role: userData.role,
-            status: userData.status
-          });
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setLoading(false);
+          return;
         }
+        
+        if (session) {
+          // Fetch user data from database
+          const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+
+          if (userError) {
+            console.error('Error fetching user:', userError);
+            setLoading(false);
+            return;
+          }
+
+          if (userData && userData.status === 'aprobado') {
+            setCurrentUser({
+              id: session.user.id,
+              email: session.user.email,
+              full_name: userData.full_name,
+              role: userData.role,
+              status: userData.status
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Unexpected error in checkUser:', err);
       }
+      
       setLoading(false);
     };
 
