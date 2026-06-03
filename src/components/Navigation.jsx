@@ -1,10 +1,7 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
 import { LayoutDashboard, ShoppingBag, Package, BarChart3, Settings } from 'lucide-react';
 
-export default function Navigation({ activeTab, setActiveTab }) {
-  const { currentUser } = useApp();
-
+export default function Navigation({ activeTab, setActiveTab, currentUser }) {
   const navItems = [
     { id: 'dashboard', label: 'Inicio', icon: LayoutDashboard },
     { id: 'orders', label: 'Pedidos', icon: ShoppingBag },
@@ -48,6 +45,12 @@ export default function Navigation({ activeTab, setActiveTab }) {
             }}>
               {item.label}
             </span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
           </button>
         );
       })}
