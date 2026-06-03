@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabaseClient';
 import { CheckCircle, XCircle, Trash2, AlertCircle, Mail, User, Shield } from 'lucide-react';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 export default function AdminPanelScreen() {
   const [pendingUsers, setPendingUsers] = useState([]);

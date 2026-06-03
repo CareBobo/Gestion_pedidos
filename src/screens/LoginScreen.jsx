@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock, AlertCircle, Loader, Eye, EyeOff } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from '../lib/supabaseClient';
 
 export default function LoginScreen({ onLoginSuccess }) {
   const [isLogin, setIsLogin] = useState(true);

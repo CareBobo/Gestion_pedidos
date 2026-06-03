@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from './lib/supabaseClient';
 import Header from './components/Header';
 import Navigation from './components/Navigation';
 import LoginScreen from './screens/LoginScreen';
@@ -8,11 +8,6 @@ import OrdersScreen from './screens/OrdersScreen';
 import InventoryScreen from './screens/InventoryScreen';
 import ReportsScreen from './screens/ReportsScreen';
 import AdminPanelScreen from './screens/AdminPanelScreen';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 function MainApp() {
   const [currentUser, setCurrentUser] = useState(null);
