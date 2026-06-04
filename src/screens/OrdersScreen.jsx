@@ -945,18 +945,86 @@ export default function OrdersScreen() {
                 fontSize: '11px', 
                 color: 'var(--text-muted)', 
                 backgroundColor: 'var(--bg-secondary)', 
-                padding: '8px 12px', 
-                borderRadius: 'var(--radius-sm)',
-                fontStyle: 'italic'
-              }}>
-                💾 El vendedor se guardará automáticamente en el directorio cuando guardes el pedido
-              </div>
+      {/* VIEW AGREGAR PEDIDO */}
+      {subTab === 'agregar' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, height: '100%' }}>
+          <form onSubmit={handleCreateOrderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1, overflowY: 'auto' }}>
+            
+            {/* Optional Autocomplete selector */}
+            <div className="form-group" style={{ marginBottom: '4px' }}>
+              <label className="form-label">¿Cargar Vendedor Guardado?</label>
+              <select 
+                className="form-select"
+                onChange={(e) => handleSelectSavedSeller(e.target.value)}
+                style={{ fontSize: '13px', padding: '10px 14px' }}
+              >
+                <option value="">-- Ingresar Datos Manualmente --</option>
+                {vendedores.map(v => (
+                  <option key={v.id} value={v.id}>
+                    {v.company_name} - {v.seller_name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <button type="submit" className="btn btn-gold" style={{ height: '46px', marginTop: '10px' }}>
-                Guardar Pedido
-              </button>
-            </form>
-          </div>
+            <div style={{ borderBottom: '1px dashed var(--border-color)', margin: '4px 0' }} />
+
+            <div className="form-group">
+              <label className="form-label">Empresa *</label>
+              <input 
+                type="text"
+                className="form-input"
+                placeholder="Ej: Distribuidora La Central"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Nombre del Vendedor *</label>
+              <input 
+                type="text"
+                className="form-input"
+                placeholder="Ej: Carlos Ruiz"
+                value={sellerName}
+                onChange={(e) => setSellerName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Número de Contacto *</label>
+              <input 
+                type="tel"
+                className="form-input"
+                placeholder="Ej: +573009876543"
+                value={sellerPhone}
+                onChange={(e) => setSellerPhone(e.target.value)}
+                required
+              />
+            </div>
+
+            <div style={{ borderBottom: '1px dashed var(--border-color)', margin: '4px 0' }} />
+
+            {/* Dynamic Items Table */}
+            {renderItemsTable()}
+
+            <div style={{ 
+              fontSize: '11px', 
+              color: 'var(--text-muted)', 
+              backgroundColor: 'var(--bg-secondary)', 
+              padding: '8px 12px', 
+              borderRadius: 'var(--radius-sm)',
+              fontStyle: 'italic'
+            }}>
+              💾 El vendedor se guardará automáticamente en el directorio cuando guardes el pedido
+            </div>
+
+            <button type="submit" className="btn btn-gold" style={{ height: '46px', marginTop: 'auto' }}>
+              Crear Pedido
+            </button>
+          </form>
         </div>
       )}
 
