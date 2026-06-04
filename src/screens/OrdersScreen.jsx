@@ -716,9 +716,31 @@ export default function OrdersScreen() {
                       <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700 }}>
                         {o.order_number}
                       </span>
-                      <span className={`badge badge-${o.status === 'en_preparacion' ? 'preparacion' : o.status}`}>
-                        {o.status.replace('_', ' ')}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className={`badge badge-${o.status === 'en_preparacion' ? 'preparacion' : o.status}`}>
+                          {o.status.replace('_', ' ')}
+                        </span>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation(); // Evita abrir el modal
+                            if (confirm('¿Eliminar este pedido permanentemente?')) {
+                              deleteOrder(o.id);
+                            }
+                          }}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--status-cancelled)',
+                            cursor: 'pointer',
+                            padding: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </div>
                     
                     <div style={{ marginBottom: '8px' }}>
