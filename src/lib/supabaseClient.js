@@ -5,11 +5,8 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-export const supabase =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey)
-    : null;
-
-if (!supabase) {
-  console.warn('[Supabase] URL o ANON KEY no definidas. El cliente no será inicializado. Configura las variables de entorno en Netlify o crea un .env.local para pruebas locales.');
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('[Supabase] URL o ANON KEY no definidas. Verifica variables en Netlify.');
 }
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

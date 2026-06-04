@@ -15,6 +15,12 @@ function MainApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   useEffect(() => {
+    // Si el cliente Supabase no está configurado, abortamos y mostramos error en consola
+    if (!supabase) {
+      console.error('[Supabase] Cliente no configurado. Verifica variables VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.');
+      setLoading(false);
+      return;
+    }
     // Check if user is already logged in
     const checkUser = async () => {
       try {
@@ -40,7 +46,7 @@ function MainApp() {
             return;
           }
 
-          if (userData && userData.status === 'aprobado') {
+          if (userData && (userData.status === 'activo' || userData.status === 'aprobado')) {
             setCurrentUser({
               id: session.user.id,
               email: session.user.email,
