@@ -354,8 +354,9 @@ h1, h2, h3, h4 {
 }
 
 /* Modales */
+.modal-content button.btn-gold { position: sticky; bottom: -8px; margin-top: auto; z-index: 10; }
 .modal-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -364,12 +365,13 @@ h1, h2, h3, h4 {
   z-index: 100;
   display: flex;
   align-items: flex-end;
+  justify-content: center;
   animation: fadeIn 0.25s ease-out;
 }
 
 .modal-content {
   width: 100%;
-  max-height: 90%;
+  max-height: 85vh; /* limit height for mobile */
   background-color: var(--bg-primary);
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
@@ -380,6 +382,7 @@ h1, h2, h3, h4 {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-bottom: 80px; /* space for sticky button */
 }
 
 @keyframes fadeIn {
