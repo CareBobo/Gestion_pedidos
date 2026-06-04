@@ -19,8 +19,8 @@ export default function DashboardScreen({ setActiveTab }) {
   }, []);
 
   // Compute Metrics
-  const pendingOrdersCount = orders.filter(o => o.status === 'pendiente' || o.status === 'en_preparacion').length;
-  const completedOrdersCount = orders.filter(o => o.status === 'cumplido' || o.status === 'entregado' || o.status === 'realizado').length;
+  const pendingOrdersCount = orders.filter(o => o.status === 'pendiente').length;
+  const completedOrdersCount = orders.filter(o => o.status === 'cumplido').length;
   
   // Calculate today's purchases/orders value
   const todaySales = orders

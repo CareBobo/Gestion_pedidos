@@ -665,7 +665,7 @@ export default function OrdersScreen() {
             paddingBottom: '4px',
             WebkitOverflowScrolling: 'touch'
           }}>
-            {['todos', 'pendiente', 'en_preparacion', 'realizado', 'entregado', 'cumplido', 'cancelado'].map((status) => (
+            {['todos', 'pendiente', 'cumplido', 'cancelado'].map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
@@ -1088,9 +1088,6 @@ export default function OrdersScreen() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
                 {[
                   { key: 'pendiente', label: 'Pendiente' },
-                  { key: 'en_preparacion', label: 'Preparación' },
-                  { key: 'realizado', label: 'Realizado' },
-                  { key: 'entregado', label: 'Entregado' },
                   { key: 'cumplido', label: 'Cumplido' },
                   { key: 'cancelado', label: 'Cancelado' }
                 ].map(item => (
