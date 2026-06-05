@@ -855,7 +855,7 @@ export default function OrdersScreen() {
             style={{ 
               padding: '0', 
               gap: '0', 
-              maxHeight: '88vh', 
+              maxHeight: '85dvh', 
               display: 'flex', 
               flexDirection: 'column' 
             }}
@@ -982,6 +982,7 @@ export default function OrdersScreen() {
             {/* Pie de página Fijo con Botón */}
             <div style={{ 
               padding: '16px 20px', 
+              paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))',
               borderTop: '1px solid var(--border-color)', 
               backgroundColor: 'var(--bg-secondary)', 
               borderBottomLeftRadius: 'var(--radius-lg)', 

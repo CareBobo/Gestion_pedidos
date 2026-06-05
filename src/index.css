@@ -460,3 +460,19 @@ h1, h2, h3, h4 {
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   MODAL MOBILE Z-INDEX & OVERLAY FIXES
+   ========================================================================== */
+
+/* Eleva el contenedor principal cuando hay algún modal abierto */
+body:has(.modal-overlay) .app-content {
+  position: relative;
+  z-index: 9999 !important;
+}
+
+/* Oculta la barra de navegación inferior PWA en celulares cuando un modal está abierto */
+body:has(.modal-overlay) .app-tabbar {
+  display: none !important;
+}
+
