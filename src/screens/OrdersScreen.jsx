@@ -849,38 +849,64 @@ export default function OrdersScreen() {
       {/* ============ CREATE ORDER MODAL ============ */}
       {showAddOrderModal && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ fontSize: '17px', color: 'var(--text-primary)', fontFamily: 'var(--font-accent)', fontWeight: 800 }}>
+          <form 
+            onSubmit={handleCreateOrderSubmit} 
+            className="modal-content" 
+            style={{ 
+              padding: '0', 
+              gap: '0', 
+              maxHeight: '88vh', 
+              display: 'flex', 
+              flexDirection: 'column' 
+            }}
+          >
+            {/* Cabecera Fija */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', 
+              padding: '16px 20px', 
+              borderBottom: '1px solid var(--border-color)', 
+              flexShrink: 0 
+            }}>
+              <h3 style={{ fontSize: '17px', color: 'var(--text-primary)', fontFamily: 'var(--font-accent)', fontWeight: 800, margin: 0 }}>
                 Registrar Pedido de Compra
               </h3>
               <button 
+                type="button"
                 onClick={() => setShowAddOrderModal(false)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
               >
                 <X size={20} />
               </button>
             </div>
 
-            {formError && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: 'var(--status-cancelled-bg)',
-                color: 'var(--status-cancelled)',
-                padding: '10px 14px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '12px',
-                fontWeight: 600
-              }}>
-                <AlertCircle size={16} />
-                <span>{formError}</span>
-              </div>
-            )}
+            {/* Cuerpo con Scroll */}
+            <div style={{ 
+              flex: 1, 
+              overflowY: 'auto', 
+              padding: '20px', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '16px' 
+            }}>
+              {formError && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: 'var(--status-cancelled-bg)',
+                  color: 'var(--status-cancelled)',
+                  padding: '10px 14px',
+                  borderRadius: 'var(--radius-sm)',
+                  fontSize: '12px',
+                  fontWeight: 600
+                }}>
+                  <AlertCircle size={16} />
+                  <span>{formError}</span>
+                </div>
+              )}
 
-            <form onSubmit={handleCreateOrderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              
               {/* Optional Autocomplete selector */}
               <div className="form-group" style={{ marginBottom: '4px' }}>
                 <label className="form-label">¿Cargar Vendedor Guardado?</label>
@@ -945,85 +971,37 @@ export default function OrdersScreen() {
                 fontSize: '11px', 
                 color: 'var(--text-muted)', 
                 backgroundColor: 'var(--bg-secondary)', 
-      {/* VIEW AGREGAR PEDIDO */}
-      {subTab === 'agregar' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, height: '100%' }}>
-          <form onSubmit={handleCreateOrderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1, overflowY: 'auto' }}>
-            
-            {/* Optional Autocomplete selector */}
-            <div className="form-group" style={{ marginBottom: '4px' }}>
-              <label className="form-label">¿Cargar Vendedor Guardado?</label>
-              <select 
-                className="form-select"
-                onChange={(e) => handleSelectSavedSeller(e.target.value)}
-                style={{ fontSize: '13px', padding: '10px 14px' }}
-              >
-                <option value="">-- Ingresar Datos Manualmente --</option>
-                {vendedores.map(v => (
-                  <option key={v.id} value={v.id}>
-                    {v.company_name} - {v.seller_name}
-                  </option>
-                ))}
-              </select>
+                padding: '8px 12px', 
+                borderRadius: 'var(--radius-sm)',
+                fontStyle: 'italic'
+              }}>
+                💾 El vendedor se guardará automáticamente en el directorio cuando guardes el pedido
+              </div>
             </div>
 
-            <div style={{ borderBottom: '1px dashed var(--border-color)', margin: '4px 0' }} />
-
-            <div className="form-group">
-              <label className="form-label">Empresa *</label>
-              <input 
-                type="text"
-                className="form-input"
-                placeholder="Ej: Distribuidora La Central"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Nombre del Vendedor *</label>
-              <input 
-                type="text"
-                className="form-input"
-                placeholder="Ej: Carlos Ruiz"
-                value={sellerName}
-                onChange={(e) => setSellerName(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Número de Contacto *</label>
-              <input 
-                type="tel"
-                className="form-input"
-                placeholder="Ej: +573009876543"
-                value={sellerPhone}
-                onChange={(e) => setSellerPhone(e.target.value)}
-                required
-              />
-            </div>
-
-            <div style={{ borderBottom: '1px dashed var(--border-color)', margin: '4px 0' }} />
-
-            {/* Dynamic Items Table */}
-            {renderItemsTable()}
-
+            {/* Pie de página Fijo con Botón */}
             <div style={{ 
-              fontSize: '11px', 
-              color: 'var(--text-muted)', 
+              padding: '16px 20px', 
+              borderTop: '1px solid var(--border-color)', 
               backgroundColor: 'var(--bg-secondary)', 
-              padding: '8px 12px', 
-              borderRadius: 'var(--radius-sm)',
-              fontStyle: 'italic'
+              borderBottomLeftRadius: 'var(--radius-lg)', 
+              borderBottomRightRadius: 'var(--radius-lg)', 
+              flexShrink: 0,
+              zIndex: 10
             }}>
-              💾 El vendedor se guardará automáticamente en el directorio cuando guardes el pedido
+              <button 
+                type="submit" 
+                className="btn btn-gold" 
+                style={{ 
+                  width: '100%', 
+                  height: '48px', 
+                  fontSize: '15px', 
+                  fontWeight: 700 
+                }}
+              >
+                Guardar Pedido
+              </button>
             </div>
-
-            <button type="submit" className="btn btn-gold" style={{ height: '46px', marginTop: 'auto' }}>
-              Crear Pedido
-            </button>
           </form>
         </div>
       )}
