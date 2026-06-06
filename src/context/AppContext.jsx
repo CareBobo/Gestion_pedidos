@@ -18,8 +18,12 @@ export const AppProvider = ({ children }) => {
   });
 
   // Supabase Configuration State
-  const [supabaseUrl, setSupabaseUrl] = useState(localStorage.getItem('EXPO_PUBLIC_SUPABASE_URL') || '');
-  const [supabaseKey, setSupabaseKey] = useState(localStorage.getItem('EXPO_PUBLIC_SUPABASE_ANON_KEY') || '');
+  const [supabaseUrl, setSupabaseUrl] = useState(() => {
+    return localStorage.getItem('EXPO_PUBLIC_SUPABASE_URL') || import.meta.env.VITE_SUPABASE_URL || '';
+  });
+  const [supabaseKey, setSupabaseKey] = useState(() => {
+    return localStorage.getItem('EXPO_PUBLIC_SUPABASE_ANON_KEY') || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+  });
   const [supabaseClient, setSupabaseClient] = useState(null);
   const [isCloudMode, setIsCloudMode] = useState(false);
 
