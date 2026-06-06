@@ -103,9 +103,9 @@ export default function OrdersScreen() {
     }
 
     // Validate items - at least one complete row
-    const validItems = orderItems.filter(i => i.cantidad && i.producto && i.valor);
+    const validItems = orderItems.filter(i => i.cantidad && i.producto);
     if (validItems.length === 0) {
-      setFormError('Agrega al menos un producto con cantidad, nombre y valor.');
+      setFormError('Agrega al menos un producto con cantidad y nombre.');
       return;
     }
 
@@ -117,7 +117,7 @@ export default function OrdersScreen() {
         items: validItems.map(i => ({
           cantidad: parseFloat(i.cantidad),
           producto: i.producto,
-          valor: parseFloat(i.valor)
+          valor: parseFloat(i.valor) || 0
         }))
       });
 
@@ -142,9 +142,9 @@ export default function OrdersScreen() {
       return;
     }
 
-    const validItems = orderItems.filter(i => i.cantidad && i.producto && i.valor);
+    const validItems = orderItems.filter(i => i.cantidad && i.producto);
     if (validItems.length === 0) {
-      setFormError('Agrega al menos un producto con cantidad, nombre y valor.');
+      setFormError('Agrega al menos un producto con cantidad y nombre.');
       return;
     }
 
@@ -155,7 +155,7 @@ export default function OrdersScreen() {
       items: validItems.map(i => ({
         cantidad: parseFloat(i.cantidad),
         producto: i.producto,
-        valor: parseFloat(i.valor)
+        valor: parseFloat(i.valor) || 0
       }))
     });
 

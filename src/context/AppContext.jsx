@@ -410,7 +410,11 @@ export const AppProvider = ({ children }) => {
     });
 
     if (isCloudMode && supabaseClient) {
-      await supabaseClient.from('orders').update(cleanFields).eq('id', orderId);
+      const { error } = await supabaseClient.from('orders').update(cleanFields).eq('id', orderId);
+      if (error) {
+        console.error('Error updating order in Supabase:', error);
+        alert('Error de Supabase al actualizar pedido: ' + error.message);
+      }
     }
 
     addLog('Edición de Pedido', `Editó los datos del pedido ${prevOrder.order_number}`);
