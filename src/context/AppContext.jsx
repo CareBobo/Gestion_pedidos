@@ -58,21 +58,32 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     if (isCloudMode && supabaseClient) {
       const fetchAll = async () => {
-        const [{ data: usersData }, { data: vendedoresData }, { data: categoriesData },
-          { data: productsData }, { data: ordersData }, { data: logsData }] = await Promise.all([
-          supabaseClient.from('users').select('*'),
-          supabaseClient.from('vendedores').select('*'),
-          supabaseClient.from('categories').select('*'),
-          supabaseClient.from('products').select('*'),
-          supabaseClient.from('orders').select('*').order('created_at', { ascending: false }),
-          supabaseClient.from('logs').select('*').order('created_at', { ascending: false })
-        ]);
-        setUsers(usersData || []);
-        setVendedores(vendedoresData || []);
-        setCategories(categoriesData || []);
-        setProducts(productsData || []);
-        setOrders(ordersData || []);
-        setLogs(logsData || []);
+        try {
+          const [uRes, vRes, cRes, pRes, oRes, lRes] = await Promise.all([
+            supabaseClient.from('users').select('*'),
+            supabaseClient.from('vendedores').select('*'),
+            supabaseClient.from('categories').select('*'),
+            supabaseClient.from('products').select('*'),
+            supabaseClient.from('orders').select('*').order('created_at', { ascending: false }),
+            supabaseClient.from('logs').select('*').order('created_at', { ascending: false })
+          ]);
+
+          if (uRes.error) console.error('Supabase users fetch error:', uRes.error);
+          if (vRes.error) console.error('Supabase vendedores fetch error:', vRes.error);
+          if (cRes.error) console.error('Supabase categories fetch error:', cRes.error);
+          if (pRes.error) console.error('Supabase products fetch error:', pRes.error);
+          if (oRes.error) console.error('Supabase orders fetch error:', oRes.error);
+          if (lRes.error) console.error('Supabase logs fetch error:', lRes.error);
+
+          setUsers(uRes.data || []);
+          setVendedores(vRes.data || []);
+          setCategories(cRes.data || []);
+          setProducts(pRes.data || []);
+          setOrders(oRes.data || []);
+          setLogs(lRes.data || []);
+        } catch (err) {
+          console.error('Unhandled initial fetch error:', err);
+        }
       };
       fetchAll();
     }
@@ -144,7 +155,13 @@ export const AppProvider = ({ children }) => {
       created_at: new Date().toISOString()
     };
     setProducts(prev => [...prev, newP]);
-    if (isCloudMode && supabaseClient) await supabaseClient.from('products').insert([newP]);
+    if (isCloudMode && supabaseClient) {
+      const { error } = await supabaseClient.from('products').insert([newP]);
+      if (error) {
+        console.error('Error inserting product in Supabase:', error);
+        alert('Error de Supabase al guardar producto: ' + error.message);
+      }
+    }
     // broadcastState removed: realtime sync handled by Supabase Realtime
   };
 
@@ -354,7 +371,11 @@ export const AppProvider = ({ children }) => {
     setOrders(prev => [newO, ...prev]);
 
     if (isCloudMode && supabaseClient) {
-      await supabaseClient.from('orders').insert([newO]);
+      const { error } = await supabaseClient.from('orders').insert([newO]);
+      if (error) {
+        console.error('Error inserting order in Supabase:', error);
+        alert('Error de Supabase al guardar pedido: ' + error.message);
+      }
     }
 
     addLog('Creación de Pedido', `Creó el pedido de compra ${orderNumber} para ${orderData.company_name} (${items.length} productos)`);
