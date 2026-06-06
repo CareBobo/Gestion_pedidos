@@ -248,7 +248,8 @@ export default function OrdersScreen() {
           particleCount: 150,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ['#D4AF37', '#0A192F', '#FFFFFF']
+          colors: ['#D4AF37', '#0A192F', '#FFFFFF'],
+          zIndex: 99999
         });
       }
     } catch (err) {
