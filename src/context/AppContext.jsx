@@ -37,6 +37,7 @@ export const AppProvider = ({ children }) => {
   const [logs, setLogs] = useState([]);
 
   const [notifications, setNotifications] = useState([]);
+  const [companyName, setCompanyName] = useState(() => localStorage.getItem('company_name') || 'Golden Boutique');
 
   // Load Supabase client
   useEffect(() => {
@@ -173,6 +174,223 @@ export const AppProvider = ({ children }) => {
 
   // ---------- End of Order CRUD ----------
 
+  // ---------- Shop Settings & Supabase Config ----------
+  const updateShopName = (name) => {
+    setCompanyName(name);
+    localStorage.setItem('company_name', name);
+    addLog('Configuración Tienda', `Se actualizó el nombre de la tienda a "${name}"`);
+  };
+
+  const saveCloudConfig = (url, key) => {
+    localStorage.setItem('EXPO_PUBLIC_SUPABASE_URL', url);
+    localStorage.setItem('EXPO_PUBLIC_SUPABASE_ANON_KEY', key);
+    setSupabaseUrl(url);
+    setSupabaseKey(key);
+    addLog('Configuración Cloud', 'Se actualizaron las credenciales de Supabase');
+  };
+
+  const clearCloudConfig = () => {
+    localStorage.removeItem('EXPO_PUBLIC_SUPABASE_URL');
+    localStorage.removeItem('EXPO_PUBLIC_SUPABASE_ANON_KEY');
+    setSupabaseUrl('');
+    setSupabaseKey('');
+    setIsCloudMode(false);
+    setSupabaseClient(null);
+    addLog('Configuración Cloud', 'Se eliminaron las credenciales de Supabase. Regresando a modo local.');
+  };
+
+  // ---------- VENDEDORES CRUD (Directory) ----------
+  const saveVendedor = async (vendData) => {
+    const matched = vendedores.find(v => 
+      v.company_name.toLowerCase() === vendData.company_name.toLowerCase() &&
+      v.seller_name.toLowerCase() === vendData.seller_name.toLowerCase()
+    );
+
+    if (matched) {
+      const updated = vendedores.map(v => v.id === matched.id ? { ...v, seller_phone: vendData.seller_phone } : v);
+      setVendedores(updated);
+      if (isCloudMode && supabaseClient) {
+        await supabaseClient.from('vendedores').update({ seller_phone: vendData.seller_phone }).eq('id', matched.id);
+      }
+      return matched;
+    }
+
+    const newV = {
+      id: generateUUID(),
+      company_name: vendData.company_name,
+      seller_name: vendData.seller_name,
+      seller_phone: vendData.seller_phone,
+      created_at: new Date().toISOString()
+    };
+    
+    setVendedores(prev => [...prev, newV]);
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('vendedores').insert([newV]);
+    }
+    addLog('Registro Proveedor', `Se guardó al vendedor ${vendData.seller_name} (${vendData.company_name}) en el directorio`);
+    return newV;
+  };
+
+  const updateVendedor = async (vendedorId, fields) => {
+    const prev = vendedores.find(v => v.id === vendedorId);
+    if (!prev) return;
+    const updated = vendedores.map(v => v.id === vendedorId ? { ...v, ...fields } : v);
+    setVendedores(updated);
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('vendedores').update(fields).eq('id', vendedorId);
+    }
+    addLog('Editar Proveedor', `Se actualizaron los datos de ${prev.seller_name} (${prev.company_name})`);
+
+    // Cascade update in orders
+    const updatedOrders = orders.map(o => {
+      if (o.company_name === prev.company_name && o.seller_name === prev.seller_name) {
+        return {
+          ...o,
+          company_name: fields.company_name || o.company_name,
+          seller_name: fields.seller_name || o.seller_name,
+          seller_phone: fields.seller_phone || o.seller_phone
+        };
+      }
+      return o;
+    });
+    setOrders(updatedOrders);
+
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('orders')
+        .update({
+          company_name: fields.company_name || undefined,
+          seller_name: fields.seller_name || undefined,
+          seller_phone: fields.seller_phone || undefined
+        })
+        .eq('company_name', prev.company_name)
+        .eq('seller_name', prev.seller_name);
+    }
+  };
+
+  const deleteVendedor = async (vendedorId) => {
+    const target = vendedores.find(v => v.id === vendedorId);
+    if (!target) return;
+    const updated = vendedores.filter(v => v.id !== vendedorId);
+    setVendedores(updated);
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('vendedores').delete().eq('id', vendedorId);
+    }
+    addLog('Eliminar Proveedor', `Se eliminó al vendedor ${target.seller_name} del directorio`);
+  };
+
+  // ---------- Product & Category CRUD ----------
+  const addCategory = async (name) => {
+    const newCat = { id: generateUUID(), name };
+    setCategories(prev => [...prev, newCat]);
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('categories').insert([newCat]);
+    }
+    addLog('Inventario', `Se añadió la categoría "${name}"`);
+    return newCat;
+  };
+
+  const updateProduct = async (productId, updatedData) => {
+    const prevProduct = products.find(p => p.id === productId);
+    if (!prevProduct) return;
+    const cleanData = {
+      ...updatedData,
+      current_stock: parseInt(updatedData.current_stock) || 0,
+      purchase_price: parseFloat(updatedData.purchase_price) || 0,
+      sell_price: parseFloat(updatedData.sell_price) || 0
+    };
+    const updated = products.map(p => p.id === productId ? { ...p, ...cleanData } : p);
+    setProducts(updated);
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('products').update(cleanData).eq('id', productId);
+    }
+    addLog('Inventario', `Se editó el producto "${prevProduct.name}"`);
+  };
+
+  const deleteProduct = async (productId) => {
+    const target = products.find(p => p.id === productId);
+    if (!target) return;
+    const updated = products.map(p => p.id === productId ? { ...p, status: 'inactivo' } : p);
+    setProducts(updated);
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('products').update({ status: 'inactivo' }).eq('id', productId);
+    }
+    addLog('Inventario', `Se desactivó el producto "${target.name}"`);
+  };
+
+  // ---------- Supplier Order Operations ----------
+  const createOrder = async (orderData) => {
+    const count = orders.length + 1001;
+    const orderNumber = `PED-${count}`;
+
+    const items = orderData.items || [];
+    const description = items.map(i => `${i.cantidad}x ${i.producto}`).join(', ');
+    const totalValue = items.reduce((sum, i) => sum + (parseFloat(i.cantidad) || 0) * (parseFloat(i.valor) || 0), 0);
+
+    const newO = {
+      id: generateUUID(),
+      order_number: orderNumber,
+      company_name: orderData.company_name,
+      seller_name: orderData.seller_name,
+      seller_phone: orderData.seller_phone,
+      items: items,
+      description: description,
+      total_value: totalValue,
+      status: 'pendiente',
+      created_by_name: currentUser ? currentUser.full_name.split(' ')[0] : 'Empleado',
+      created_at: new Date().toISOString()
+    };
+
+    // Auto save seller details in directory!
+    await saveVendedor({
+      company_name: orderData.company_name,
+      seller_name: orderData.seller_name,
+      seller_phone: orderData.seller_phone
+    });
+
+    setOrders(prev => [newO, ...prev]);
+
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('orders').insert([newO]);
+    }
+
+    addLog('Creación de Pedido', `Creó el pedido de compra ${orderNumber} para ${orderData.company_name} (${items.length} productos)`);
+    triggerLocalNotification('Nuevo Pedido a Proveedor', `Se registró el pedido ${orderNumber} a ${orderData.company_name} por $${newO.total_value.toFixed(2)}`);
+  };
+
+  const updateOrder = async (orderId, updatedFields) => {
+    const prevOrder = orders.find(o => o.id === orderId);
+    if (!prevOrder) return;
+
+    const items = updatedFields.items || [];
+    const description = items.map(i => `${i.cantidad}x ${i.producto}`).join(', ');
+    const totalValue = items.reduce((sum, i) => sum + (parseFloat(i.cantidad) || 0) * (parseFloat(i.valor) || 0), 0);
+
+    const cleanFields = {
+      company_name: updatedFields.company_name,
+      seller_name: updatedFields.seller_name,
+      seller_phone: updatedFields.seller_phone,
+      items: items,
+      description: description,
+      total_value: totalValue
+    };
+
+    const updatedOrders = orders.map(o => o.id === orderId ? { ...o, ...cleanFields } : o);
+    setOrders(updatedOrders);
+
+    // Also auto update directory
+    await saveVendedor({
+      company_name: updatedFields.company_name,
+      seller_name: updatedFields.seller_name,
+      seller_phone: updatedFields.seller_phone
+    });
+
+    if (isCloudMode && supabaseClient) {
+      await supabaseClient.from('orders').update(cleanFields).eq('id', orderId);
+    }
+
+    addLog('Edición de Pedido', `Editó los datos del pedido ${prevOrder.order_number}`);
+  };
+
   // Theme effect (preserve original behavior)
   useEffect(() => {
     const root = window.document.documentElement;
@@ -238,10 +456,25 @@ export const AppProvider = ({ children }) => {
       logs, setLogs,
       notifications, setNotifications,
       addLog,
+      companyName,
+      updateShopName,
+      saveCloudConfig,
+      clearCloudConfig,
+      saveVendedor,
+      updateVendedor,
+      deleteVendedor,
+      addCategory,
       createProduct,
-      deleteOrder,
+      updateProduct,
+      deleteProduct,
+      createOrder,
+      updateOrder,
       updateOrderStatus,
-      // expose other functions as needed
+      deleteOrder,
+      triggerLocalNotification,
+      isCloudMode,
+      supabaseUrl,
+      supabaseKey
     }}>
       {children}
     </AppContext.Provider>
